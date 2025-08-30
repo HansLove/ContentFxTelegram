@@ -3,567 +3,296 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ForexSignal Pro — Telegram Content Creator</title>
+  <title>ForexSignal Pro — Content Creator</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-  <div class="wrap">
-    <header>
+  <div class="container">
+    <header class="header">
       <div class="logo">
         <i class="fas fa-chart-line"></i>
       </div>
-      <h1>ForexSignal Pro — Content Creator</h1>
-      <div class="muted" style="margin-left:auto">Regulatory compliant • Professional wording • Visual enhancement</div>
+      <h1>ForexSignal Pro</h1>
+      <p class="subtitle">Create professional forex content for Telegram</p>
     </header>
 
-    <!-- Left: ENHANCED FORM -->
-    <section class="card pane">
-      <form id="signalForm" class="grid">
-        <!-- Content Type Selection -->
-        <div class="content-type-selector">
-          <label>Content Type</label>
-          <div class="type-buttons">
-            <button type="button" class="type-btn active" data-type="signal">
-              <i class="fas fa-signal"></i> Signal
-            </button>
-            <button type="button" class="type-btn" data-type="analysis">
-              <i class="fas fa-chart-bar"></i> Analysis
-            </button>
-            <button type="button" class="type-btn" data-type="education">
-              <i class="fas fa-graduation-cap"></i> Education
-            </button>
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label>Author / Signature</label>
-            <input id="author" placeholder="e.g. Hans from TradeTab" />
-          </div>
-          <div>
-            <label>Timeframe</label>
-            <select id="tf">
-              <option>1m</option>
-              <option>5m</option>
-              <option>15m</option>
-              <option selected>1H</option>
-              <option>4H</option>
-              <option>Daily</option>
-              <option>Weekly</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label>Instrument</label>
-            <select id="symbol">
-              <option value="EURUSD">EUR/USD</option>
-              <option value="GBPUSD">GBP/USD</option>
-              <option value="USDJPY">USD/JPY</option>
-              <option value="EURJPY" selected>EUR/JPY</option>
-              <option value="GBPJPY">GBP/JPY</option>
-              <option value="AUDUSD">AUD/USD</option>
-              <option value="NZDUSD">NZD/USD</option>
-              <option value="USDCAD">USD/CAD</option>
-              <option value="XAUUSD">XAU/USD (Gold)</option>
-              <option value="XAGUSD">XAG/USD (Silver)</option>
-              <option value="custom">Custom...</option>
-            </select>
-          </div>
-          <div>
-            <label>Direction</label>
-            <select id="side">
-              <option value="BUY">BUY / LONG</option>
-              <option value="SELL" selected>SELL / SHORT</option>
-              <option value="NEUTRAL">NEUTRAL / WAIT</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Enhanced Entry Options -->
-        <div class="row">
-          <div>
-            <label>Entry Strategy</label>
-            <select id="entryStrategy">
-              <option value="single">Single Price</option>
-              <option value="region" selected>Price Region</option>
-              <option value="breakout">Breakout Level</option>
-              <option value="retracement">Retracement Level</option>
-            </select>
-          </div>
-          <div>
-            <label>Entry Confidence</label>
-            <select id="confidence">
-              <option value="high">High (80%+)</option>
-              <option value="medium" selected>Medium (60-80%)</option>
-              <option value="low">Low (40-60%)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label>Entry (single) <span class="muted">or leave empty if using region</span></label>
-            <input id="entrySingle" placeholder="e.g. 171.450" />
-          </div>
-          <div>
-            <label>Entry Region (low – high)</label>
-            <input id="entryRange" placeholder="e.g. 171.400 – 171.500" />
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label>Stop‑Loss (SL)</label>
-            <input id="sl" placeholder="e.g. 171.800" />
-          </div>
-          <div>
-            <label>Risk Level</label>
-            <select id="risk">
-              <option value="conservative">Conservative (1-2%)</option>
-              <option value="moderate" selected>Moderate (2-3%)</option>
-              <option value="aggressive">Aggressive (3-5%)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row3">
-          <div>
-            <label>TP1</label>
-            <input id="tp1" placeholder="e.g. 171.200" />
-          </div>
-          <div>
-            <label>TP2</label>
-            <input id="tp2" placeholder="e.g. 171.000" />
-          </div>
-          <div>
-            <label>TP3</label>
-            <input id="tp3" placeholder="e.g. 170.626" />
-          </div>
-        </div>
-
-        <!-- Enhanced Context Builder -->
-        <div class="context-builder">
-          <label>Market Context Builder</label>
-          <div class="context-tabs">
-            <button type="button" class="tab-btn active" data-tab="technical">Technical</button>
-            <button type="button" class="tab-btn" data-tab="fundamental">Fundamental</button>
-            <button type="button" class="tab-btn" data-tab="sentiment">Sentiment</button>
-          </div>
-          
-          <div class="tab-content active" id="technical-tab">
-            <div class="context-options">
-              <label><input type="checkbox" value="support-resistance" /> Support/Resistance</label>
-              <label><input type="checkbox" value="trend-line" /> Trend Line</label>
-              <label><input type="checkbox" value="fibonacci" /> Fibonacci</label>
-              <label><input type="checkbox" value="moving-average" /> Moving Average</label>
-              <label><input type="checkbox" value="rsi" /> RSI</label>
-              <label><input type="checkbox" value="macd" /> MACD</label>
-            </div>
-          </div>
-          
-          <div class="tab-content" id="fundamental-tab">
-            <div class="context-options">
-              <label><input type="checkbox" value="economic-data" /> Economic Data</label>
-              <label><input type="checkbox" value="central-bank" /> Central Bank</label>
-              <label><input type="checkbox" value="geopolitical" /> Geopolitical</label>
-              <label><input type="checkbox" value="correlation" /> Correlation</label>
-            </div>
-          </div>
-          
-          <div class="tab-content" id="sentiment-tab">
-            <div class="context-options">
-              <label><input type="checkbox" value="market-mood" /> Market Mood</label>
-              <label><input type="checkbox" value="positioning" /> Positioning</label>
-              <label><input type="checkbox" value="volatility" /> Volatility</label>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <label>Custom Context <span class="muted">(keep it factual & concise)</span></label>
-          <textarea id="context" placeholder="Structure: market bias, key level, invalidation. Use the context builder above for guidance.">Momentum lower on H1; looking for a pullback into 171.40–171.50 supply. Invalidation above 171.80.</textarea>
-        </div>
-
-        <!-- Visual Enhancement Controls -->
-        <div class="visual-controls">
-          <label>Visual Enhancement</label>
-          <div class="visual-options">
-            <div class="visual-option">
-              <label><input type="checkbox" id="addEmojis" checked /> Add relevant emojis</label>
-            </div>
-            <div class="visual-option">
-              <label><input type="checkbox" id="addBorders" checked /> Add message borders</label>
-            </div>
-            <div class="visual-option">
-              <label><input type="checkbox" id="addHighlights" checked /> Highlight key levels</label>
-            </div>
-            <div class="visual-option">
-              <label><input type="checkbox" id="addSeparators" checked /> Add visual separators</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label>Valid until (UTC)</label>
-            <input id="valid" type="datetime-local" />
-          </div>
-          <div>
-            <label>Chat ID / @channel</label>
-            <input id="chatId" placeholder="@tradetabofficial or -1001234567890" value="@tradetabofficial" />
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label>Attach chart (optional)</label>
-            <input id="chart" type="file" accept="image/*" />
-          </div>
-          <div>
-            <label>Parse mode</label>
-            <select id="parseMode">
-              <option selected>HTML</option>
-              <option>Markdown</option>
-              <option>PlainText</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Enhanced Compliance Controls -->
-        <div class="compliance-section">
-          <label>Compliance & Risk Management</label>
-          <div class="compliance-options">
-            <div class="compliance-option">
-              <label><input type="checkbox" id="toggleDisclaimer" checked /> Include full risk disclaimer</label>
-            </div>
-            <div class="compliance-option">
-              <label><input type="checkbox" id="toggleWatermark" checked /> Add minimal watermark</label>
-            </div>
-            <div class="compliance-option">
-              <label><input type="checkbox" id="toggleRiskWarning" checked /> Add risk level warning</label>
-            </div>
-            <div class="compliance-option">
-              <label><input type="checkbox" id="toggleEducational" checked /> Mark as educational content</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button type="button" id="btnPreview" class="primary">
-            <i class="fas fa-eye"></i> Update Preview
-          </button>
-          <button type="button" id="btnCopy" class="ghost">
-            <i class="fas fa-copy"></i> Copy Message
-          </button>
-          <button type="button" id="btnSend" class="ok">
-            <i class="fas fa-paper-plane"></i> Send to Server
-          </button>
-          <button type="button" id="btnReset" class="danger">
-            <i class="fas fa-trash"></i> Clear
-          </button>
-        </div>
-
-        <small class="muted">Server endpoint (edit in code): <code id="endpointLabel">/api/telegram/post-signal</code></small>
-      </form>
-    </section>
-
-    <!-- Right: ENHANCED PREVIEW & CHECKS -->
-    <section class="card pane preview">
-      <div class="glow"></div>
-      <div class="signal" id="signalCard">
-        <div class="signal-header">
-          <div class="signal-title">
-            <h2 id="title">
-              <span class="muted">Market commentary</span> • 
-              <span class="ticker">EURJPY</span> 
-              <span class="muted">(1H)</span>
-            </h2>
-            <div class="signal-meta">
-              <span class="confidence-badge medium">Medium Confidence</span>
-              <span class="risk-badge moderate">Moderate Risk</span>
-            </div>
-          </div>
-          <div class="pill sell" id="sidePill">SELL</div>
-        </div>
-        
-        <div class="levels">
-          <div class="level-row">
-            <span class="muted">Entry</span> 
-            <span id="entryOut" class="level-value">171.400 – 171.500</span>
-          </div>
-          <div class="level-row">
-            <span class="muted">SL</span> 
-            <span id="slOut" class="level-value">171.800</span>
-          </div>
-          <div class="level-row">
-            <span class="muted">Targets</span> 
-            <span id="tpsOut" class="level-value">TP1 171.200 • TP2 171.000 • TP3 170.626</span>
-          </div>
-          <div class="level-row">
-            <span class="muted">Context</span> 
-            <span id="ctxOut" class="level-value">Momentum lower on H1; pullback into supply; invalidation above 171.80.</span>
-          </div>
-        </div>
-        
-        <div class="signal-footer">
-          <div class="fine" id="metaOut">Risk: Moderate • Valid until —</div>
-          <div class="fine muted" id="discOut" style="margin-top:10px">
-            <i class="fas fa-exclamation-triangle"></i> 
-            Educational purposes only. Not financial advice. Trading involves risk. Past performance ≠ future results.
-          </div>
-          <div class="fine muted" id="signOut" style="margin-top:6px">— Hans from TradeTab</div>
-        </div>
-        
-        <div id="imgPreview" style="margin-top:12px; display:none">
-          <img id="chartImg" alt="attached chart" style="max-width:100%; border-radius:12px; border:1px solid #202b3a" />
-        </div>
-        
-        <div class="checklist" id="checklist"></div>
+    <main class="main-content">
+      <!-- Content Type Selector -->
+      <div class="content-type-selector">
+        <button class="type-btn active" data-type="signal">
+          <i class="fas fa-signal"></i>
+          <span>Signal</span>
+        </button>
+        <button class="type-btn" data-type="analysis">
+          <i class="fas fa-chart-bar"></i>
+          <span>Analysis</span>
+        </button>
+        <button class="type-btn" data-type="education">
+          <i class="fas fa-graduation-cap"></i>
+          <span>Education</span>
+        </button>
       </div>
-    </section>
 
-    <div class="toast" id="toast"></div>
+      <!-- Form Container -->
+      <div class="form-container">
+        <!-- Signal Form -->
+        <form id="signalForm" class="content-form active">
+          <div class="form-section">
+            <h3>Signal Details</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="signalSymbol">Instrument</label>
+                <select id="signalSymbol" required>
+                  <option value="">Select pair</option>
+                  <option value="EURUSD">EUR/USD</option>
+                  <option value="GBPUSD">GBP/USD</option>
+                  <option value="USDJPY">USD/JPY</option>
+                  <option value="EURJPY">EUR/JPY</option>
+                  <option value="GBPJPY">GBP/JPY</option>
+                  <option value="AUDUSD">AUD/USD</option>
+                  <option value="NZDUSD">NZD/USD</option>
+                  <option value="USDCAD">USD/CAD</option>
+                  <option value="XAUUSD">XAU/USD (Gold)</option>
+                  <option value="XAGUSD">XAG/USD (Silver)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="signalTimeframe">Timeframe</label>
+                <select id="signalTimeframe" required>
+                  <option value="">Select timeframe</option>
+                  <option value="1m">1m</option>
+                  <option value="5m">5m</option>
+                  <option value="15m">15m</option>
+                  <option value="1H">1H</option>
+                  <option value="4H">4H</option>
+                  <option value="Daily">Daily</option>
+                  <option value="Weekly">Weekly</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="signalDirection">Direction</label>
+                <select id="signalDirection" required>
+                  <option value="">Select direction</option>
+                  <option value="BUY">BUY / LONG</option>
+                  <option value="SELL">SELL / SHORT</option>
+                  <option value="NEUTRAL">NEUTRAL / WAIT</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="signalConfidence">Confidence</label>
+                <select id="signalConfidence" required>
+                  <option value="">Select confidence</option>
+                  <option value="High">High (80%+)</option>
+                  <option value="Medium">Medium (60-80%)</option>
+                  <option value="Low">Low (40-60%)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Entry & Exit</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="signalEntry">Entry Price/Region</label>
+                <input type="text" id="signalEntry" placeholder="e.g., 1.0850 or 1.0840-1.0860" required>
+              </div>
+              <div class="form-group">
+                <label for="signalStopLoss">Stop Loss</label>
+                <input type="text" id="signalStopLoss" placeholder="e.g., 1.0880" required>
+              </div>
+              <div class="form-group">
+                <label for="signalTP1">Take Profit 1</label>
+                <input type="text" id="signalTP1" placeholder="e.g., 1.0820">
+              </div>
+              <div class="form-group">
+                <label for="signalTP2">Take Profit 2</label>
+                <input type="text" id="signalTP2" placeholder="e.g., 1.0800">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Analysis & Context</h3>
+            <div class="form-group">
+              <label for="signalAnalysis">Market Analysis</label>
+              <textarea id="signalAnalysis" rows="4" placeholder="Describe the market setup, key levels, and reasoning..." required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="signalRisk">Risk Level</label>
+              <select id="signalRisk" required>
+                <option value="">Select risk level</option>
+                <option value="Conservative">Conservative (1-2%)</option>
+                <option value="Moderate">Moderate (2-3%)</option>
+                <option value="Aggressive">Aggressive (3-5%)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Additional Info</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="signalAuthor">Author</label>
+                <input type="text" id="signalAuthor" placeholder="Your name" required>
+              </div>
+              <div class="form-group">
+                <label for="signalValidUntil">Valid Until</label>
+                <input type="datetime-local" id="signalValidUntil">
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Analysis Form -->
+        <form id="analysisForm" class="content-form">
+          <div class="form-section">
+            <h3>Analysis Details</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="analysisSymbol">Instrument</label>
+                <select id="analysisSymbol" required>
+                  <option value="">Select pair</option>
+                  <option value="EURUSD">EUR/USD</option>
+                  <option value="GBPUSD">GBP/USD</option>
+                  <option value="USDJPY">USD/JPY</option>
+                  <option value="EURJPY">EUR/JPY</option>
+                  <option value="GBPJPY">GBP/JPY</option>
+                  <option value="AUDUSD">AUD/USD</option>
+                  <option value="NZDUSD">NZD/USD</option>
+                  <option value="USDCAD">USD/CAD</option>
+                  <option value="XAUUSD">XAU/USD (Gold)</option>
+                  <option value="XAGUSD">XAG/USD (Silver)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="analysisTimeframe">Timeframe</label>
+                <select id="analysisTimeframe" required>
+                  <option value="">Select timeframe</option>
+                  <option value="1H">1H</option>
+                  <option value="4H">4H</option>
+                  <option value="Daily">Daily</option>
+                  <option value="Weekly">Weekly</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="analysisType">Analysis Type</label>
+                <select id="analysisType" required>
+                  <option value="">Select type</option>
+                  <option value="Technical">Technical Analysis</option>
+                  <option value="Fundamental">Fundamental Analysis</option>
+                  <option value="Sentiment">Market Sentiment</option>
+                  <option value="Correlation">Correlation Analysis</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="analysisAuthor">Author</label>
+                <input type="text" id="analysisAuthor" placeholder="Your name" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Analysis Content</h3>
+            <div class="form-group">
+              <label for="analysisTitle">Title</label>
+              <input type="text" id="analysisTitle" placeholder="Brief, descriptive title" required>
+            </div>
+            <div class="form-group">
+              <label for="analysisContent">Analysis</label>
+              <textarea id="analysisContent" rows="6" placeholder="Provide your detailed analysis, key levels, and market insights..." required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="analysisConclusion">Conclusion</label>
+              <textarea id="analysisConclusion" rows="3" placeholder="Summary and key takeaways..." required></textarea>
+            </div>
+          </div>
+        </form>
+
+        <!-- Education Form -->
+        <form id="educationForm" class="content-form">
+          <div class="form-section">
+            <h3>Education Details</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="educationTopic">Topic</label>
+                <select id="educationTopic" required>
+                  <option value="">Select topic</option>
+                  <option value="Technical Analysis">Technical Analysis</option>
+                  <option value="Risk Management">Risk Management</option>
+                  <option value="Psychology">Trading Psychology</option>
+                  <option value="Fundamentals">Fundamental Analysis</option>
+                  <option value="Strategy">Trading Strategies</option>
+                  <option value="Tools">Trading Tools</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="educationLevel">Level</label>
+                <select id="educationLevel" required>
+                  <option value="">Select level</option>
+                  <option value="Beginner">Beginner</option>
+                  <option value="Intermediate">Intermediate</option>
+                  <option value="Advanced">Advanced</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="educationAuthor">Author</label>
+                <input type="text" id="educationAuthor" placeholder="Your name" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Educational Content</h3>
+            <div class="form-group">
+              <label for="educationTitle">Title</label>
+              <input type="text" id="educationTitle" placeholder="Clear, educational title" required>
+            </div>
+            <div class="form-group">
+              <label for="educationContent">Content</label>
+              <textarea id="educationContent" rows="8" placeholder="Write your educational content here. Be clear, informative, and helpful..." required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="educationKeyPoints">Key Points</label>
+              <textarea id="educationKeyPoints" rows="3" placeholder="List 3-5 key takeaways or main points..." required></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button id="btnPreview" class="btn btn-primary">
+          <i class="fas fa-eye"></i> Preview
+        </button>
+        <button id="btnSend" class="btn btn-success">
+          <i class="fas fa-paper-plane"></i> Send to Telegram
+        </button>
+        <button id="btnClear" class="btn btn-secondary">
+          <i class="fas fa-trash"></i> Clear
+        </button>
+      </div>
+    </main>
+
+    <!-- Preview Panel -->
+    <aside class="preview-panel">
+      <div class="preview-header">
+        <h3>Preview</h3>
+        <span class="preview-type" id="previewType">Signal</span>
+      </div>
+      <div class="preview-content" id="previewContent">
+        <div class="preview-placeholder">
+          <i class="fas fa-eye"></i>
+          <p>Click "Preview" to see how your content will look</p>
+        </div>
+      </div>
+    </aside>
   </div>
 
-  <script>
-    // === CONFIG ===
-    const ENDPOINT = "/api/telegram/post-signal"; // <<— change to your server route
+  <!-- Toast Notifications -->
+  <div id="toast" class="toast"></div>
 
-    const el = (id)=>document.getElementById(id);
-
-    function nonEmpty(v){return v && String(v).trim().length>0}
-
-    // Enhanced Telegram HTML builder with better forex wording
-    function buildTelegramHTML({symbol, side, entrySingle, entryRange, sl, tps, tf, context, risk, valid, author, confidence, entryStrategy}){
-      // Sanitize basic chars for HTML parse_mode
-      const esc = (s)=>String(s||"")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;");
-
-      const entry = nonEmpty(entryRange) ? esc(entryRange) : esc(entrySingle);
-      const tpsStr = tps.filter(Boolean).map((v,i)=>`TP${i+1}: <code>${esc(v)}</code>`).join(" \u2022 ");
-      
-      // Enhanced forex-specific wording
-      const directionText = side === 'BUY' ? 'LONG / BUY' : side === 'SELL' ? 'SHORT / SELL' : 'NEUTRAL / WAIT';
-      const confidenceText = confidence ? ` (${confidence} confidence)` : '';
-      const strategyText = entryStrategy ? ` - ${entryStrategy} strategy` : '';
-
-      const lines = [
-        `<b>Market Analysis</b> — <b>${esc(symbol)}</b> (${esc(tf})${strategyText}`,
-        `<b>${directionText}</b>${confidenceText}`,
-        nonEmpty(entry) ? `<b>Entry:</b> <code>${entry}</code>` : "",
-        nonEmpty(sl) ? `<b>Stop Loss:</b> <code>${esc(sl)}</code>` : "",
-        nonEmpty(tpsStr) ? `<b>Targets:</b> ${tpsStr}` : "",
-        nonEmpty(context) ? `<b>Analysis:</b> ${esc(context)}` : "",
-        nonEmpty(valid) ? `<b>Valid until (UTC):</b> ${esc(valid)}` : "",
-        `<b>Risk Level:</b> ${esc(risk)}`,
-        `<i>Educational purposes only. This is not financial advice. Trading leveraged products involves high risk. Past performance is not indicative of future results. You are solely responsible for your trading decisions.</i>`,
-        nonEmpty(author) ? `— <i>${esc(author)}</i>` : ""
-      ].filter(Boolean);
-
-      return lines.join("\n");
-    }
-
-    function updatePreview(){
-      const symbol = el('symbol').value.trim();
-      const side   = el('side').value;
-      const entrySingle = el('entrySingle').value.trim();
-      const entryRange  = el('entryRange').value.trim();
-      const sl     = el('sl').value.trim();
-      const tp1    = el('tp1').value.trim();
-      const tp2    = el('tp2').value.trim();
-      const tp3    = el('tp3').value.trim();
-      const tf     = el('tf').value;
-      const context= el('context').value.trim();
-      const risk   = el('risk').value;
-      const confidence = el('confidence').value;
-      const valid  = el('valid').value ? new Date(el('valid').value).toISOString().replace('T',' ').slice(0,16) : '';
-      const author = el('author').value.trim();
-
-      // Header & pill
-      el('title').innerHTML = `<span class="muted">Market commentary</span> • <span class="ticker">${symbol}</span> <span class="muted">(${tf})</span>`;
-      const pill = el('sidePill');
-      pill.textContent = side === 'NEUTRAL' ? 'WAIT' : side;
-      pill.className = 'pill ' + (side === 'BUY' ? 'buy' : side === 'SELL' ? 'sell' : 'neutral');
-
-      // Update confidence and risk badges
-      updateBadges(confidence, risk);
-
-      // Levels
-      el('entryOut').textContent = entryRange || entrySingle || '—';
-      el('slOut').textContent = sl || '—';
-      const tps = [tp1,tp2,tp3].filter(Boolean).map((v,i)=>`TP${i+1} ${v}`).join(' • ');
-      el('tpsOut').textContent = tps || '—';
-      el('ctxOut').textContent = context || '—';
-      el('metaOut').textContent = `Risk: ${risk}${valid?` • Valid until ${valid}`:''}`;
-
-      // Disclaimer / signature
-      el('discOut').style.display = el('toggleDisclaimer').checked? 'block':'none';
-      el('signOut').textContent = author ? `— ${author}` : '';
-
-      // Enhanced checklist
-      const checks = [];
-      if(!nonEmpty(sl)) checks.push(['SL is missing', 'error']);
-      if(!nonEmpty(entrySingle) && !nonEmpty(entryRange)) checks.push(['Entry price/region missing','warning']);
-      if([tp1,tp2,tp3].filter(Boolean).length===0) checks.push(['At least one TP recommended','warning']);
-      if(!nonEmpty(context)) checks.push(['Add short factual context','warning']);
-      if(el('toggleDisclaimer').checked===false) checks.push(['Risk disclaimer is off','warning']);
-      if(el('toggleRiskWarning').checked===false) checks.push(['Risk warning is off','warning']);
-      renderChecklist(checks);
-
-      // Return message for other handlers
-      return buildTelegramHTML({symbol, side, entrySingle, entryRange, sl, tps:[tp1,tp2,tp3], tf, context, risk, valid, author, confidence, entryStrategy: el('entryStrategy').value});
-    }
-
-    function updateBadges(confidence, risk) {
-      const confidenceBadge = document.querySelector('.confidence-badge');
-      const riskBadge = document.querySelector('.risk-badge');
-      
-      if (confidenceBadge) {
-        confidenceBadge.textContent = `${confidence.charAt(0).toUpperCase() + confidence.slice(1)} Confidence`;
-        confidenceBadge.className = `confidence-badge ${confidence}`;
-      }
-      
-      if (riskBadge) {
-        riskBadge.textContent = `${risk.charAt(0).toUpperCase() + risk.slice(1)} Risk`;
-        riskBadge.className = `risk-badge ${risk}`;
-      }
-    }
-
-    function renderChecklist(items){
-      const list = el('checklist');
-      list.innerHTML = '';
-      if(items.length===0){
-        list.innerHTML = `<div class="check"><span class="dot" style="background:var(--ok)"></span> Looks good — ready to send.</div>`;
-        return;
-      }
-      items.forEach(([text, tone])=>{
-        const color = tone==='error'? 'var(--error)': tone==='warning'? 'var(--warning)': 'var(--ok)';
-        const row = document.createElement('div');
-        row.className='check';
-        row.innerHTML = `<span class="dot" style="background:${color}"></span> ${text}`;
-        list.appendChild(row);
-      })
-    }
-
-    function showToast(msg){
-      const t=el('toast');
-      t.textContent = msg; t.style.display='block';
-      setTimeout(()=>t.style.display='none', 2400);
-    }
-
-    // Content type switching
-    document.querySelectorAll('.type-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        // You can add logic here to show/hide different form sections based on content type
-      });
-    });
-
-    // Context tab switching
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const tabName = btn.dataset.tab;
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(`${tabName}-tab`).classList.add('active');
-      });
-    });
-
-    // Context builder integration
-    document.querySelectorAll('.context-options input[type="checkbox"]').forEach(checkbox => {
-      checkbox.addEventListener('change', () => {
-        const context = el('context');
-        const selectedOptions = Array.from(document.querySelectorAll('.context-options input[type="checkbox"]:checked'))
-          .map(cb => cb.value);
-        
-        if (selectedOptions.length > 0) {
-          const contextText = context.value;
-          const newContext = contextText + (contextText ? '\n' : '') + 
-            `Key factors: ${selectedOptions.join(', ')}`;
-          context.value = newContext;
-        }
-      });
-    });
-
-    // File handling (optional chart)
-    let chartBase64 = null;
-    el('chart').addEventListener('change', (e)=>{
-      const file = e.target.files?.[0];
-      if(!file){ chartBase64=null; el('imgPreview').style.display='none'; return; }
-      const reader = new FileReader();
-      reader.onload = () => {
-        chartBase64 = reader.result; // data:image/...;base64,xxx
-        el('chartImg').src = chartBase64;
-        el('imgPreview').style.display='block';
-      };
-      reader.readAsDataURL(file);
-    });
-
-    // Buttons
-    el('btnPreview').addEventListener('click', updatePreview);
-
-    el('btnCopy').addEventListener('click', ()=>{
-      const msg = updatePreview();
-      navigator.clipboard.writeText(msg).then(()=>showToast('Message copied'));
-    });
-
-    el('btnReset').addEventListener('click', ()=>{
-      el('signalForm').reset();
-      chartBase64=null; el('imgPreview').style.display='none';
-      document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-      document.querySelector('.type-btn[data-type="signal"]').classList.add('active');
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelector('.tab-btn[data-tab="technical"]').classList.add('active');
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      document.getElementById('technical-tab').classList.add('active');
-      updatePreview();
-    });
-
-    el('btnSend').addEventListener('click', async ()=>{
-      const message = updatePreview();
-      const payload = {
-        chat_id: el('chatId').value.trim(),
-        parse_mode: el('parseMode').value,
-        message,
-        image_base64: chartBase64, // server should upload and attach if provided
-        meta: {
-          symbol: el('symbol').value.trim(),
-          side: el('side').value,
-          timeframe: el('tf').value,
-          risk: el('risk').value,
-          confidence: el('confidence').value,
-          entry_strategy: el('entryStrategy').value,
-          valid_until_utc: el('valid').value || null,
-          author: el('author').value.trim(),
-          watermark: el('toggleWatermark').checked,
-          content_type: document.querySelector('.type-btn.active').dataset.type
-        }
-      };
-
-      try{
-        const res = await fetch(ENDPOINT, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
-        if(!res.ok){
-          const text = await res.text();
-          console.error(text);
-          showToast('Server error — check console/logs');
-          return;
-        }
-        showToast('Sent to server');
-      }catch(err){
-        console.error(err);
-        showToast('Network error');
-      }
-    });
-
-    // Initial render
-    updatePreview();
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
