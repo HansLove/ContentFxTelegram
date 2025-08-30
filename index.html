@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TradeTab — Telegram Signal Composer</title>
+  <style>
+    :root {
+      --bg: #0b0f14; /* deep navy */
+      --card: #111824;
+      --ink: #e6edf7;
+      --muted: #8aa0b6;
+      --accent: #6cd1ff;
+      --buy: #21d07a;
+      --sell: #ff6b6b;
+      --warning: #ffc64b;
+      --error: #ff8a8a;
+      --ok: #63f5a3;
+      --brand: #7aa2ff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background: radial-gradient(1200px 800px at 80% -10%, #1b2a3a55, transparent),
+                 radial-gradient(900px 600px at -10% 110%, #113a5555, transparent),
+                 var(--bg);
+      color: var(--ink);
+      font: 14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      letter-spacing:.2px;
+    }
+    .wrap{display:grid; grid-template-columns: 440px 1fr; gap:18px; padding:20px; max-width:1200px; margin:0 auto}
+    header{grid-column: 1/-1; display:flex; align-items:center; gap:12px; padding:6px 0 4px}
+    .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6cd1ff33,#7aa2ff55); display:grid; place-items:center;}
+    .logo:after{content:"TT";font-weight:700;color:var(--accent)}
+    h1{font-size:18px;margin:0}
+    .card{background: #0f1622b3; border:1px solid #1d2838; border-radius:14px; box-shadow:0 8px 30px #00000055}
+    .pane{padding:18px}
+    .grid{display:grid; gap:10px}
+    label{font-size:12px; color: var(--muted); display:block; margin-bottom:6px}
+    input, select, textarea{
+      width:100%; background:#0c141f; color:var(--ink); border:1px solid #1e2a3a; border-radius:10px;
+      padding:10px 12px; outline:none; transition:.2s border, .2s box-shadow;
+    }
+    input:focus, select:focus, textarea:focus{ border-color:#2c84ff; box-shadow:0 0 0 3px #2c84ff33 }
+    textarea{min-height:90px; resize:vertical}
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    .row3{display:grid; grid-template-columns: repeat(3,1fr); gap:10px}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    button{
+      border:none; border-radius:10px; padding:10px 14px; cursor:pointer; color:#02101d; font-weight:600;
+      background:linear-gradient(180deg,#82c8ff,#4d9dff); transition:.2s transform, .2s box-shadow
+    }
+    button:hover{transform:translateY(-1px); box-shadow:0 6px 18px #2c84ff44}
+    .ghost{background:#0c141f; color:var(--ink); border:1px solid #1e2a3a}
+    .danger{background:linear-gradient(180deg,#ff9aa7,#ff6b6b)}
+    .ok{background:linear-gradient(180deg,#7bf1c6,#2de09a)}
+
+    /* Live preview */
+    .preview{position:relative; overflow:hidden}
+    .glow{position:absolute; inset:-20%; background: conic-gradient(from 0deg, #6cd1ff33, #7aa2ff22, transparent, transparent);
+          filter: blur(40px); animation: spin 16s linear infinite}
+    @keyframes spin{to{transform: rotate(360deg)}}
+
+    .signal{position:relative; padding:20px; border-radius:14px; background:
+      linear-gradient(180deg,#0e1521 0%,#0b111a 100%);
+      border:1px solid #1d2838; box-shadow: inset 0 1px 0 #263247;
+      max-width: 620px; margin: 8px; overflow:hidden
+    }
+    .signal h2{margin:0 0 8px; font-size:18px}
+    .pill{display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:6px 10px; border-radius:999px;
+          border:1px solid #203046; background:#0c141f}
+    .pill.buy{border-color:#1b4230; background:#0d1b15; color:var(--buy)}
+    .pill.sell{border-color:#46202a; background:#1b0d11; color:var(--sell)}
+    .levels{margin:12px 0; display:grid; gap:6px}
+    .levels div{display:flex; justify-content:space-between; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:13px}
+    .muted{color:var(--muted)}
+    .fine{font-size:11px; color:#9fb1c9}
+    .ticker{opacity:.9}
+
+    /* mini compliance checklist */
+    .checklist{display:grid; gap:6px; margin-top:12px}
+    .check{display:flex; align-items:center; gap:8px; font-size:12px}
+    .dot{width:8px;height:8px;border-radius:50%}
+
+    /* toast */
+    .toast{position:fixed; right:18px; bottom:18px; background:#0f1622; border:1px solid #1d2838; border-radius:12px; padding:12px 14px; display:none}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo"></div>
+      <h1>TradeTab — Telegram Signal Composer</h1>
+      <div class="muted" style="margin-left:auto">Regulator‑friendly. Clean wording. One‑click post.</div>
+    </header>
+
+    <!-- Left: FORM -->
+    <section class="card pane">
+      <form id="signalForm" class="grid">
+        <div class="row">
+          <div>
+            <label>Author / Signature</label>
+            <input id="author" placeholder="e.g. Hans from TradeTab" />
+          </div>
+          <div>
+            <label>Timeframe</label>
+            <select id="tf">
+              <option>15m</option>
+              <option selected>1H</option>
+              <option>4H</option>
+              <option>Daily</option>
+              <option>Weekly</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Instrument</label>
+            <input id="symbol" value="EURJPY" />
+          </div>
+          <div>
+            <label>Direction</label>
+            <select id="side">
+              <option value="BUY">BUY</option>
+              <option value="SELL" selected>SELL</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Entry (single) <span class="muted">or leave empty if using region</span></label>
+            <input id="entrySingle" placeholder="e.g. 171.450" />
+          </div>
+          <div>
+            <label>Entry Region (low – high)</label>
+            <input id="entryRange" placeholder="e.g. 171.400 – 171.500" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Stop‑Loss (SL)</label>
+            <input id="sl" placeholder="e.g. 171.800" />
+          </div>
+          <div>
+            <label>Risk level</label>
+            <select id="risk">
+              <option>Low</option>
+              <option selected>Moderate</option>
+              <option>High</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row3">
+          <div>
+            <label>TP1</label>
+            <input id="tp1" placeholder="e.g. 171.200" />
+          </div>
+          <div>
+            <label>TP2</label>
+            <input id="tp2" placeholder="e.g. 171.000" />
+          </div>
+          <div>
+            <label>TP3</label>
+            <input id="tp3" placeholder="e.g. 170.626" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Valid until (UTC)</label>
+            <input id="valid" type="datetime-local" />
+          </div>
+          <div>
+            <label>Chat ID / @channel</label>
+            <input id="chatId" placeholder="@tradetabofficial or -1001234567890" value="@tradetabofficial" />
+          </div>
+        </div>
+
+        <div>
+          <label>Rationale / Context <span class="muted">(keep it factual & concise)</span></label>
+          <textarea id="context" placeholder="Structure: market bias, key level, invalidation.">Momentum lower on H1; looking for a pullback into 171.40–171.50 supply. Invalidation above 171.80.</textarea>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Attach chart (optional)</label>
+            <input id="chart" type="file" accept="image/*" />
+          </div>
+          <div>
+            <label>Parse mode</label>
+            <select id="parseMode">
+              <option selected>HTML</option>
+              <option>Markdown</option>
+              <option>PlainText</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label><input type="checkbox" id="toggleDisclaimer" checked /> Include full risk disclaimer</label>
+          </div>
+          <div>
+            <label><input type="checkbox" id="toggleWatermark" checked /> Add minimal watermark (TradeTab)</label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="btnPreview">Update preview</button>
+          <button type="button" id="btnCopy" class="ghost">Copy message</button>
+          <button type="button" id="btnSend" class="ok">Send to server</button>
+          <button type="button" id="btnReset" class="danger">Clear</button>
+        </div>
+
+        <small class="muted">Server endpoint (edit in code): <code id="endpointLabel">/api/telegram/post-signal</code></small>
+      </form>
+    </section>
+
+    <!-- Right: PREVIEW & CHECKS -->
+    <section class="card pane preview">
+      <div class="glow"></div>
+      <div class="signal" id="signalCard">
+        <div style="display:flex; gap:10px; align-items:center; justify-content:space-between">
+          <h2 id="title"><span class="muted">Market commentary</span> • <span class="ticker">EURJPY</span> <span class="muted">(1H)</span></h2>
+          <div class="pill sell" id="sidePill">SELL</div>
+        </div>
+        <div class="levels">
+          <div><span class="muted">Entry</span> <span id="entryOut">171.400 – 171.500</span></div>
+          <div><span class="muted">SL</span> <span id="slOut">171.800</span></div>
+          <div><span class="muted">Targets</span> <span id="tpsOut">TP1 171.200 • TP2 171.000 • TP3 170.626</span></div>
+          <div><span class="muted">Context</span> <span id="ctxOut">Momentum lower on H1; pullback into supply; invalidation above 171.80.</span></div>
+        </div>
+        <div class="fine" id="metaOut">Risk: Moderate • Valid until —</div>
+        <div class="fine muted" id="discOut" style="margin-top:10px">Educational only. Not financial advice. Trading involves risk. Past performance ≠ future results.</div>
+        <div class="fine muted" id="signOut" style="margin-top:6px">— Hans from TradeTab</div>
+        <div id="imgPreview" style="margin-top:12px; display:none">
+          <img id="chartImg" alt="attached chart" style="max-width:100%; border-radius:12px; border:1px solid #202b3a" />
+        </div>
+        <div class="checklist" id="checklist"></div>
+      </div>
+    </section>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script>
+    // === CONFIG ===
+    const ENDPOINT = "/api/telegram/post-signal"; // <<— change to your server route
+
+    const el = (id)=>document.getElementById(id);
+
+    function nonEmpty(v){return v && String(v).trim().length>0}
+
+    function buildTelegramHTML({symbol, side, entrySingle, entryRange, sl, tps, tf, context, risk, valid, author}){
+      // Sanitize basic chars for HTML parse_mode
+      const esc = (s)=>String(s||"")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;");
+
+      const entry = nonEmpty(entryRange) ? esc(entryRange) : esc(entrySingle);
+      const tpsStr = tps.filter(Boolean).map((v,i)=>`TP${i+1}: <code>${esc(v)}</code>`).join(" \u2022 ");
+
+      const lines = [
+        `<b>Market commentary</b> — <b>${esc(symbol)}</b> (${esc(tf)})`,
+        `<b>${side==='BUY'?'LONG / BUY':'SHORT / SELL'}</b>`,
+        nonEmpty(entry) ? `<b>Entry:</b> <code>${entry}</code>` : "",
+        nonEmpty(sl) ? `<b>SL:</b> <code>${esc(sl)}</code>` : "",
+        nonEmpty(tpsStr) ? `<b>Targets:</b> ${tpsStr}` : "",
+        nonEmpty(context) ? `<b>Context:</b> ${esc(context)}` : "",
+        nonEmpty(valid) ? `<b>Valid until (UTC):</b> ${esc(valid)}` : "",
+        `<b>Risk:</b> ${esc(risk)}`,
+        `<i>Educational purposes only. This is not financial advice. Trading leveraged products involves high risk. Past performance is not indicative of future results. You are solely responsible for your trading decisions.</i>`,
+        nonEmpty(author) ? `— <i>${esc(author)}</i>` : ""
+      ].filter(Boolean);
+
+      return lines.join("\n");
+    }
+
+    function updatePreview(){
+      const symbol = el('symbol').value.trim();
+      const side   = el('side').value;
+      const entrySingle = el('entrySingle').value.trim();
+      const entryRange  = el('entryRange').value.trim();
+      const sl     = el('sl').value.trim();
+      const tp1    = el('tp1').value.trim();
+      const tp2    = el('tp2').value.trim();
+      const tp3    = el('tp3').value.trim();
+      const tf     = el('tf').value;
+      const context= el('context').value.trim();
+      const risk   = el('risk').value;
+      const valid  = el('valid').value ? new Date(el('valid').value).toISOString().replace('T',' ').slice(0,16) : '';
+      const author = el('author').value.trim();
+
+      // Header & pill
+      el('title').innerHTML = `<span class="muted">Market commentary</span> • <span class="ticker">${symbol}</span> <span class="muted">(${tf})</span>`;
+      const pill = el('sidePill');
+      pill.textContent = side;
+      pill.classList.toggle('buy', side==='BUY');
+      pill.classList.toggle('sell', side==='SELL');
+
+      // Levels
+      el('entryOut').textContent = entryRange || entrySingle || '—';
+      el('slOut').textContent = sl || '—';
+      const tps = [tp1,tp2,tp3].filter(Boolean).map((v,i)=>`TP${i+1} ${v}`).join(' • ');
+      el('tpsOut').textContent = tps || '—';
+      el('ctxOut').textContent = context || '—';
+      el('metaOut').textContent = `Risk: ${risk}${valid?` • Valid until ${valid}`:''}`;
+
+      // Disclaimer / signature
+      el('discOut').style.display = el('toggleDisclaimer').checked? 'block':'none';
+      el('signOut').textContent = author ? `— ${author}` : '';
+
+      // Checklist
+      const checks = [];
+      if(!nonEmpty(sl)) checks.push(['SL is missing', 'error']);
+      if(!nonEmpty(entrySingle) && !nonEmpty(entryRange)) checks.push(['Entry price/region missing','warning']);
+      if([tp1,tp2,tp3].filter(Boolean).length===0) checks.push(['At least one TP recommended','warning']);
+      if(!nonEmpty(context)) checks.push(['Add short factual context','warning']);
+      if(el('toggleDisclaimer').checked===false) checks.push(['Risk disclaimer is off','warning']);
+      renderChecklist(checks);
+
+      // Return message for other handlers
+      return buildTelegramHTML({symbol, side, entrySingle, entryRange, sl, tps:[tp1,tp2,tp3], tf, context, risk, valid, author});
+    }
+
+    function renderChecklist(items){
+      const list = el('checklist');
+      list.innerHTML = '';
+      if(items.length===0){
+        list.innerHTML = `<div class="check"><span class="dot" style="background:var(--ok)"></span> Looks good — ready to send.</div>`;
+        return;
+      }
+      items.forEach(([text, tone])=>{
+        const color = tone==='error'? 'var(--error)': tone==='warning'? 'var(--warning)': 'var(--ok)';
+        const row = document.createElement('div');
+        row.className='check';
+        row.innerHTML = `<span class="dot" style="background:${color}"></span> ${text}`;
+        list.appendChild(row);
+      })
+    }
+
+    function showToast(msg){
+      const t=el('toast');
+      t.textContent = msg; t.style.display='block';
+      setTimeout(()=>t.style.display='none', 2400);
+    }
+
+    // File handling (optional chart)
+    let chartBase64 = null;
+    el('chart').addEventListener('change', (e)=>{
+      const file = e.target.files?.[0];
+      if(!file){ chartBase64=null; el('imgPreview').style.display='none'; return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        chartBase64 = reader.result; // data:image/...;base64,xxx
+        el('chartImg').src = chartBase64;
+        el('imgPreview').style.display='block';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Buttons
+    el('btnPreview').addEventListener('click', updatePreview);
+
+    el('btnCopy').addEventListener('click', ()=>{
+      const msg = updatePreview();
+      navigator.clipboard.writeText(msg).then(()=>showToast('Message copied'));
+    });
+
+    el('btnReset').addEventListener('click', ()=>{
+      el('signalForm').reset();
+      chartBase64=null; el('imgPreview').style.display='none';
+      updatePreview();
+    });
+
+    el('btnSend').addEventListener('click', async ()=>{
+      const message = updatePreview();
+      const payload = {
+        chat_id: el('chatId').value.trim(),
+        parse_mode: el('parseMode').value,
+        message,
+        image_base64: chartBase64, // server should upload and attach if provided
+        meta: {
+          symbol: el('symbol').value.trim(),
+          side: el('side').value,
+          timeframe: el('tf').value,
+          risk: el('risk').value,
+          valid_until_utc: el('valid').value || null,
+          author: el('author').value.trim(),
+          watermark: el('toggleWatermark').checked
+        }
+      };
+
+      try{
+        const res = await fetch(ENDPOINT, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+        if(!res.ok){
+          const text = await res.text();
+          console.error(text);
+          showToast('Server error — check console/logs');
+          return;
+        }
+        showToast('Sent to server');
+      }catch(err){
+        console.error(err);
+        showToast('Network error');
+      }
+    });
+
+    // Initial render
+    updatePreview();
+  </script>
+</body>
+</html>
