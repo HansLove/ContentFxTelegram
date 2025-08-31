@@ -1,6 +1,6 @@
 # ForexSignal Pro - Content Creator
 
-A clean, simple, and smooth web application for creating professional forex content for Telegram channels.
+A clean, simple, and smooth web application for creating professional forex content for Telegram channels with **AI-powered risk analysis**, **writing advice**, **favorites management**, and **recurring posts**.
 
 ## Features
 
@@ -14,6 +14,12 @@ A clean, simple, and smooth web application for creating professional forex cont
 
 - **Clean Interface** - Simple, intuitive design that's easy to use
 - **Real-time Preview** - See exactly how your content will look before sending
+- **Image Upload** - Attach charts and images to your messages (drag & drop supported)
+- **AI Risk Analysis** - Automatic detection of high-risk content and compliance issues
+- **Writing Advice** - AI-powered suggestions to improve your content quality
+- **Copy to Clipboard** - One-click copy with perfect Telegram formatting
+- **Favorites System** - Save and reuse your best content
+- **Recurring Posts** - Schedule posts to repeat automatically
 - **Backend Integration** - Connects to your Telegram backend at `localhost:3002/telegram/makePost`
 - **Responsive Design** - Works on desktop and mobile devices
 - **Professional Formatting** - Automatically formats content for Telegram
@@ -37,15 +43,28 @@ The application sends data to your backend in this format:
 
 ```json
 {
-  "message": "Your formatted content here..."
+  "message": "Your formatted content here...",
+  "image": "base64_encoded_image_data",
+  "imageName": "filename.jpg",
+  "imageType": "image/jpeg"
 }
 ```
 
-Your backend should expect this structure and handle the `message` field as shown in your code:
+Your backend should expect this structure and handle both the `message` field and optional `image` data:
 
 ```javascript
-const { message } = req.body;
-// Process and send to Telegram
+const { message, image, imageName, imageType } = req.body;
+
+if (image) {
+    // Convert base64 to buffer
+    const imageBuffer = Buffer.from(image, 'base64');
+    
+    // Save image or send to Telegram
+    console.log('Received image:', imageName, imageType, imageBuffer.length);
+}
+
+// Always handle the message
+console.log('Received message:', message);
 ```
 
 ## Usage
@@ -59,16 +78,113 @@ const { message } = req.body;
 - **Analysis**: Market analysis with title, content, and conclusion
 - **Education**: Educational content with topic, level, and key points
 
-### 3. **Preview Your Content**
+### 3. **Attach Images (Optional)**
+- **Drag & Drop**: Simply drag an image file onto the upload area
+- **Click to Upload**: Click the upload area to select an image file
+- **Supported Formats**: JPG, PNG, GIF (Max: 5MB)
+- **Remove**: Click the X button to remove attached images
+
+### 4. **Preview & Analyze**
 - Click "Preview" to see how your content will look
-- Review the formatting and content
+- **Risk Analysis**: Automatically detects compliance issues and risk factors
+- **Writing Tips**: Get AI-powered suggestions to improve your content
 
-### 4. **Send to Telegram**
+### 5. **Copy to Clipboard**
+- Click "Copy to Clipboard" to copy content with perfect Telegram formatting
+- Ready to paste directly into Telegram
+- No need to reformat or adjust spacing
+
+### 6. **Save as Favorite**
+- Click "Save as Favorite" to store your content
+- Give it a memorable name
+- Access it later from the Favorites panel
+
+### 7. **Schedule Recurring Post**
+- Click "Schedule Recurring" to set up automatic posting
+- Choose frequency (daily/weekly/monthly)
+- Set specific time for posting
+- Perfect for daily market updates
+
+### 8. **Send to Telegram**
 - Click "Send to Telegram" to post to your channel
-- The content is sent to your backend at `localhost:3002/telegram/makePost`
+- Content and images are sent to your backend at `localhost:3002/telegram/makePost`
 
-### 5. **Clear Forms**
+### 9. **Clear Forms**
 - Use "Clear" to reset all forms and start fresh
+
+## AI-Powered Features
+
+### 🛡️ **Risk Analysis**
+
+The application automatically analyzes your content for:
+
+- **High Risk**: Promises/guarantees, get-rich-quick schemes, risk-free claims
+- **Medium Risk**: High leverage recommendations, all-in mentality
+- **Low Risk**: Risk management concepts, educational content
+
+**Risk Score**: 0-100 scale with color-coded indicators
+- 🟢 **Low Risk** (0-30): Content is compliant and professional
+- 🟡 **Medium Risk** (31-60): Some concerns, review recommended
+- 🔴 **High Risk** (61-100): Significant compliance issues, rewrite needed
+
+### 💡 **Writing Advice**
+
+AI-powered suggestions for:
+
+- **Content Length**: Optimal length for engagement
+- **Visual Structure**: Use of emojis and formatting
+- **Risk Disclaimers**: Compliance requirements
+- **Professional Tone**: Language and credibility
+- **Technical Analysis**: Proper terminology usage
+- **Entry/Exit Clarity**: Actionable signal structure
+
+## Content Management
+
+### ⭐ **Favorites System**
+
+- **Save Content**: Store your best signals, analysis, and educational posts
+- **Quick Access**: Load favorites with one click
+- **Copy & Paste**: Copy favorite content directly to clipboard
+- **Organize**: Name and categorize your favorites
+- **Persistent**: Favorites are saved locally and persist between sessions
+
+### 🕐 **Recurring Posts**
+
+- **Daily Updates**: Perfect for morning market summaries
+- **Weekly Analysis**: Schedule weekly technical reviews
+- **Monthly Education**: Regular educational content
+- **Flexible Timing**: Set specific times for posting
+- **Active/Inactive**: Toggle posts on and off as needed
+
+## Image Support
+
+### **Telegram Compatibility**
+- ✅ **Images display beautifully** in Telegram messages
+- ✅ **Charts and screenshots** enhance your analysis
+- ✅ **Professional appearance** with proper formatting
+- ✅ **Mobile-friendly** viewing experience
+
+### **Upload Features**
+- **Drag & Drop**: Intuitive file upload
+- **File Validation**: Type and size checking
+- **Preview**: See exactly what will be sent
+- **Easy Removal**: One-click image removal
+
+## Backend Testing
+
+### **Debugging Tools**
+Use `backend-test.html` to test your backend connection:
+
+1. **Test Connection**: Verify backend is reachable
+2. **Send Text Only**: Test basic message handling
+3. **Send with Image**: Test image upload functionality
+4. **View Logs**: See detailed request/response information
+
+### **Common Issues**
+- **Connection Refused**: Backend not running on port 3002
+- **CORS Error**: Backend needs CORS headers
+- **404 Error**: Endpoint path incorrect
+- **Image Not Received**: Check backend image handling
 
 ## Content Examples
 
@@ -126,8 +242,23 @@ To change the backend URL, edit the `backendUrl` in `app.js`:
 this.backendUrl = 'http://localhost:3002/telegram/makePost';
 ```
 
-### Content Formatting
-Modify the preview generation functions in `app.js` to change how content is formatted.
+### Risk Analysis Rules
+Modify the `analyzeRisk()` function in `app.js` to customize risk detection:
+
+```javascript
+// Add custom risk indicators
+if (text.includes('your_custom_phrase')) {
+  riskScore += 20;
+  riskFactors.push({ 
+    factor: 'Custom Factor', 
+    level: 'medium', 
+    description: 'Your description here' 
+  });
+}
+```
+
+### Writing Advice
+Customize the `generateWritingAdvice()` function for your specific needs.
 
 ### Styling
 Edit `style.css` to customize colors, fonts, and layout.
@@ -135,10 +266,12 @@ Edit `style.css` to customize colors, fonts, and layout.
 ## File Structure
 
 ```
-├── index.html          # Main HTML file
-├── style.css           # Styling and layout
-├── app.js             # JavaScript functionality
-└── README.md          # This file
+├── index.html              # Main HTML file with all features
+├── style.css               # Styling, layout, and responsive design
+├── app.js                  # JavaScript with AI features and management
+├── backend-test.html       # Backend testing and debugging tool
+├── test-image.html         # Image upload testing demo
+└── README.md               # This documentation
 ```
 
 ## Browser Support
@@ -154,10 +287,26 @@ Edit `style.css` to customize colors, fonts, and layout.
 - Check that your backend is running on `localhost:3002`
 - Verify the endpoint `/telegram/makePost` exists
 - Check browser console for error messages
+- Use `backend-test.html` to debug connection issues
+
+### Images Not Working
+- Ensure image file is under 5MB
+- Check file format (JPG, PNG, GIF)
+- Verify backend can handle base64 image data
+- Test with `backend-test.html` to isolate issues
 
 ### Preview Not Working
 - Ensure all required fields are filled
 - Check browser console for JavaScript errors
+
+### Risk Analysis Issues
+- Generate preview first to trigger analysis
+- Check that content contains text for analysis
+
+### Favorites Not Saving
+- Check browser localStorage support
+- Ensure JavaScript is enabled
+- Check console for errors
 
 ### Styling Issues
 - Clear browser cache
@@ -167,8 +316,10 @@ Edit `style.css` to customize colors, fonts, and layout.
 
 For issues or questions:
 1. Check the browser console for error messages
-2. Verify your backend is running and accessible
-3. Ensure all required fields are completed before previewing
+2. Use `backend-test.html` to test backend connectivity
+3. Verify your backend is running and accessible
+4. Ensure all required fields are completed before previewing
+5. Check image file size and format requirements
 
 ## License
 
